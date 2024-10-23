@@ -1,3 +1,4 @@
+import './PaginaListaTarefas.css';
 import { useState } from 'react';
 import BotaoCustomizado from '../../comum/componentes/BotaoCustomizado/BotaoCustomizado';
 import Principal from '../../comum/componentes/Principal/Principal';
@@ -10,7 +11,7 @@ const PaginaListaTarefas = () => {
 
   const adicionarNaLista = () => {
     if (descricao && descricao.trim()) {
-      tarefas.push(descricao);
+      tarefas.push({ descricao, feita: false });
       setTarefas([...tarefas]);
     } else {
       alert('Preencha o campo Descrição');
@@ -18,14 +19,40 @@ const PaginaListaTarefas = () => {
     setDescricao('');
     document.getElementById('campoDescricao').focus();
   };
+
   const removerDaLista = (index) => {
-    tarefas.splice(index, 1);
+    if (
+      confirm(
+        `Tem certeza que deseja excluir: ${tarefas[index].descricao}`
+      )
+    ) {
+      if (tarefas[index].feita) {
+        tarefas.splice(index, 1);
+        setTarefas([...tarefas]);
+      } else {
+        alert(
+          'A tarefa precisa estar concluída para ser excluida'
+        );
+      }
+    }
+  };
+
+  const marcarComoFeita = (index) => {
+    const tarefaEdicao = tarefas[index];
+    tarefas[index] = {
+      ...tarefaEdicao,
+      feita: !tarefaEdicao.feita,
+    };
+
     setTarefas([...tarefas]);
   };
 
   return (
-    <Principal titulo="Lista de Tarefas" voltarPara="/">
-      <div>
+    <Principal
+      titulo={`Lista de Tarefas (${tarefas.length})`}
+      voltarPara="/"
+    >
+      <div className="pagina-lista-tarefas_campo-descricao">
         <input
           id="campoDescricao"
           type="text"
@@ -38,23 +65,46 @@ const PaginaListaTarefas = () => {
             }
           }}
         />
-        <BotaoCustomizado aoClicar={adicionarNaLista}>
+        <BotaoCustomizado
+          cor="secundaria"
+          aoClicar={adicionarNaLista}
+        >
           +
         </BotaoCustomizado>
       </div>
-      <ul>
-        {tarefas.map((item, index) => {
-          return (
-            <li key={index}>
-              {item}
-              <FaTrashCan
-                color="red"
-                onClick={() => removerDaLista(index)}
-              />
-            </li>
-          );
-        })}
-      </ul>
+      {tarefas.map((item, index) => {
+        return (
+          <div
+            key={index}
+            className="pagina-lista-tarefas_item"
+          >
+            <input
+              type="checkbox"
+              checked={item.feita}
+              onChange={() => marcarComoFeita(index)}
+            />
+            <span
+              style={{
+                textDecoration: item.feita
+                  ? 'line-through'
+                  : 'none',
+              }}
+            >
+              {item.descricao}
+            </span>
+            <FaTrashCan
+              color="red"
+              onClick={() => removerDaLista(index)}
+            />
+          </div>
+        );
+      })}
+
+      {tarefas.length === 0 && (
+        <span className="pagina-lista-tarefas_mensagem-vazia">
+          Não tem tarefa para listar.
+        </span>
+      )}
     </Principal>
   );
 };
