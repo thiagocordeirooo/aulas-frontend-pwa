@@ -27,6 +27,13 @@ const PaginaInicial = () => {
       >
         Lista de Tarefas
       </BotaoCustomizado>
+
+      <BotaoCustomizado
+        cor="primaria"
+        aoClicar={() => navigate('/lista-clientes')}
+      >
+        Lista de Clientes
+      </BotaoCustomizado>
     </Principal>
   );
 };
