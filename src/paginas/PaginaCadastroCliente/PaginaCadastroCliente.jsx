@@ -1,12 +1,20 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import BotaoCustomizado from '../../comum/componentes/BotaoCustomizado/BotaoCustomizado';
 import Principal from '../../comum/componentes/Principal/Principal';
 import ServicoCliente from '../../comum/servicos/ServicoCliente';
+import {
+  formatarComMascara,
+  MASCARA_CELULAR,
+  MASCARA_CPF,
+} from '../../comum/utils/mascaras';
 import './PaginaCadastroCliente.css';
+
+const instanciaServicoCliente = new ServicoCliente();
 
 const PaginaCadastroCliente = () => {
   const navigate = useNavigate();
+  const params = useParams();
 
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
@@ -14,25 +22,49 @@ const PaginaCadastroCliente = () => {
   const [dataNascimento, setDataNascimento] = useState('');
   const [cpf, setCpf] = useState('');
 
-  const servicoCliente = new ServicoCliente();
+  useEffect(() => {
+    if (params.id) {
+      const clienteEncontrado =
+        instanciaServicoCliente.buscarPorId(params.id);
+      if (clienteEncontrado) {
+        setNome(clienteEncontrado.nome);
+        setEmail(clienteEncontrado.email);
+        setCelular(clienteEncontrado.celular);
+        setDataNascimento(clienteEncontrado.dataNascimento);
+        setCpf(clienteEncontrado.cpf);
+      }
+    }
+  }, [params.id]);
 
   const salvar = () => {
-    const novoCliente = {
+    const cliente = {
+      id: params.id ? +params.id : Date.now(),
       nome,
       email,
       celular,
       dataNascimento,
       cpf,
     };
-    servicoCliente.salvar(novoCliente);
+    if (params.id) {
+      instanciaServicoCliente.editarCliente(cliente);
+    } else {
+      instanciaServicoCliente.cadastrarCliente(cliente);
+    }
     navigate('/lista-clientes');
   };
 
   return (
     <Principal
-      titulo="Novo Cliente"
+      titulo={params.id ? 'Editar Cliente' : 'Novo Cliente'}
       voltarPara="/lista-clientes"
     >
+      {params.id && (
+        <div className="campo">
+          <label>Id</label>
+          <input type="text" value={params.id} disabled />
+        </div>
+      )}
+
       <div className="campo">
         <label>Nome</label>
         <input
@@ -59,7 +91,14 @@ const PaginaCadastroCliente = () => {
           type="tel"
           placeholder="Digite o número do seu Whatsapp"
           value={celular}
-          onChange={(e) => setCelular(e.target.value)}
+          onChange={(e) =>
+            setCelular(
+              formatarComMascara(
+                e.target.value,
+                MASCARA_CELULAR
+              )
+            )
+          }
         />
       </div>
 
@@ -81,7 +120,14 @@ const PaginaCadastroCliente = () => {
           type="tel"
           placeholder="Digite seu CPF"
           value={cpf}
-          onChange={(e) => setCpf(e.target.value)}
+          onChange={(e) =>
+            setCpf(
+              formatarComMascara(
+                e.target.value,
+                MASCARA_CPF
+              )
+            )
+          }
         />
       </div>
       <BotaoCustomizado cor="secundaria" aoClicar={salvar}>
