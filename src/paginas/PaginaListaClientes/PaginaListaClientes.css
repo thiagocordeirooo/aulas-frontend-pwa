@@ -6,3 +6,8 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.pagina-lista-clientes__item-cliente-acoes {
+  display: flex;
+  gap: 16px;
+}

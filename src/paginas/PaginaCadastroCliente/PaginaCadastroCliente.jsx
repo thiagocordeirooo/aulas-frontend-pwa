@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import BotaoCustomizado from '../../comum/componentes/BotaoCustomizado/BotaoCustomizado';
 import Principal from '../../comum/componentes/Principal/Principal';
 import ServicoCliente from '../../comum/servicos/ServicoCliente';
@@ -37,6 +38,10 @@ const PaginaCadastroCliente = () => {
   }, [params.id]);
 
   const salvar = () => {
+    if (!nome || !email) {
+      toast.error('Preencha todos os campos obrigatórios!');
+      return;
+    }
     const cliente = {
       id: params.id ? +params.id : Date.now(),
       nome,
