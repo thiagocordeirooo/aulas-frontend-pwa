@@ -17,3 +17,4 @@ export const formatarComMascara = (value, mask) => {
 
 export const MASCARA_CPF = '###.###.###-##';
 export const MASCARA_CELULAR = '(##) #####-####';
+export const MASCARA_CEP = '#####-###';

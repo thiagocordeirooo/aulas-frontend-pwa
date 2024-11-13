@@ -9,6 +9,18 @@
   align-items: center;
 }
 
+.avatar_perfil {
+  height: 100px;
+  width: 100px;
+  background-color: var(--cor-texto-claro);
+
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 a {
   text-decoration: none;
   color: inherit;
