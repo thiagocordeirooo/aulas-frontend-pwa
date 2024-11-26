@@ -1,3 +1,5 @@
+import instanciaApi from './Api';
+
 class ServicoUsuarios {
   listar() {
     const usuariosDoLocalStorage = localStorage.getItem('lista-usuarios');
@@ -9,9 +11,7 @@ class ServicoUsuarios {
   }
 
   cadastrarUsuario(usuario) {
-    const usuariosDoLocalStorage = this.listar();
-    usuariosDoLocalStorage.push(usuario);
-    localStorage.setItem('lista-usuarios', JSON.stringify(usuariosDoLocalStorage));
+    return instanciaApi.post('/usuarios', usuario);
   }
 }
 

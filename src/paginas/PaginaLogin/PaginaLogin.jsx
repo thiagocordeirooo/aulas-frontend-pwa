@@ -13,17 +13,17 @@ const PaginaLogin = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const entrar = () => {
-    if (!email || !senha) {
-      toast.error('Preencha todos os campos.');
-      return;
-    }
+  const entrar = async () => {
+    try {
+      if (!email || !senha) {
+        toast.error('Preencha todos os campos.');
+        return;
+      }
 
-    const usuarioLogado = instanciaServicoAutenticacao.login(email, senha);
-    if (usuarioLogado) {
+      await instanciaServicoAutenticacao.login(email, senha);
       navigate('/');
-    } else {
-      toast.error('Usuário ou senha inválida.');
+    } catch (error) {
+      toast.error(error.response.data);
     }
   };
 

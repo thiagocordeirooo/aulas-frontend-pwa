@@ -14,21 +14,25 @@ const PaginaNovoUsuario = () => {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const cadastrar = () => {
-    if (!nome || !email || !senha) {
-      toast.error('Preencha todos os campos.');
-      return;
+  const cadastrar = async () => {
+    try {
+      if (!nome || !email || !senha) {
+        toast.error('Preencha todos os campos.');
+        return;
+      }
+
+      const usuario = {
+        nome,
+        email,
+        senha,
+      };
+
+      await instanciaServicoUsuarios.cadastrarUsuario(usuario);
+      toast.success('Cadastro criado com sucesso.');
+      navigate('/login');
+    } catch (error) {
+      toast.error(error.response.data);
     }
-
-    const usuario = {
-      nome,
-      email,
-      senha,
-    };
-
-    instanciaServicoUsuarios.cadastrarUsuario(usuario);
-    toast.success('Cadastro criado com sucesso.');
-    navigate('/login');
   };
 
   return (

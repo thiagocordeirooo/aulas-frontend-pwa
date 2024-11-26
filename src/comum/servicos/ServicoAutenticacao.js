@@ -1,18 +1,9 @@
-import ServicoUsuarios from './ServicoUsuarios';
-
-const instanciaServicoUsuarios = new ServicoUsuarios();
+import instanciaApi from './Api';
 
 class ServicoAutenticacao {
-  login(email, senha) {
-    const usuariosDoLocalStorage = instanciaServicoUsuarios.listar();
-
-    const usuarioLogado = usuariosDoLocalStorage.find((u) => u.email === email && u.senha === senha);
-
-    if (usuarioLogado) {
-      localStorage.setItem('usuario-logado', JSON.stringify(usuarioLogado));
-    }
-
-    return usuarioLogado;
+  async login(email, senha) {
+    const response = await instanciaApi.post('/login', { email, senha });
+    localStorage.setItem('usuario-logado', JSON.stringify(response.data));
   }
 
   buscarUsuarioLogado() {
